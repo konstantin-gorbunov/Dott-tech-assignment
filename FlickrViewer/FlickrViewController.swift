@@ -72,6 +72,10 @@ final class FlickrViewController: UIViewController {
         guard let lastResult = searches.last else {
             return
         }
+        if lastResult.pages == lastResult.page {
+            print("No more images matching \(lastResult.searchTerm)")
+            return
+        }
         requestPhotos(lastResult.searchTerm, lastResult.page + 1)
     }
 }
@@ -104,7 +108,6 @@ extension FlickrViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reuseIdentifier,
                                                       for: indexPath) as! FlickrPhotoCell
         let flickrPhoto = photo(for: indexPath)
-        cell.backgroundColor = .white
         cell.imageView.image = flickrPhoto.thumbnail
         return cell
     }

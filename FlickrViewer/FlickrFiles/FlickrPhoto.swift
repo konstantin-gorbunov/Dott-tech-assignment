@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FlickrPhoto: Equatable {
+class FlickrPhoto {
     
     var thumbnail: UIImage?
     
@@ -29,9 +29,5 @@ class FlickrPhoto: Equatable {
             return url
         }
         return nil
-    }
-    
-    static func ==(lhs: FlickrPhoto, rhs: FlickrPhoto) -> Bool {
-        return lhs.photoID == rhs.photoID
-    }
+    }    
 }
