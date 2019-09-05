@@ -12,6 +12,8 @@ let apiKey: String = "3e7cc266ae2b0e0d78e279ce8e361736"
 
 class Flickr {
     
+    var session = URLSession.shared
+    
     private enum Error: Swift.Error {
         case unknownAPIResponse
         case generic
@@ -25,7 +27,7 @@ class Flickr {
         
         let searchRequest = URLRequest(url: searchURL)
         
-        URLSession.shared.dataTask(with: searchRequest) { (data, response, error) in
+        session.dataTask(with: searchRequest) { (data, response, error) in
             if let error = error {
                 DispatchQueue.main.async {
                     completion(Result.error(error))
