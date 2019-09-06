@@ -17,6 +17,7 @@ final class FlickrViewController: UIViewController {
         static let reuseIdentifier = "FlickrCell"
         static let itemsPerRow: CGFloat = 3
         static let sectionInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
+        static let searchResultPageThumbnailsInMemory: Int = 5
     }
     
     private var searches: [FlickrSearchResults] = []
@@ -46,6 +47,7 @@ final class FlickrViewController: UIViewController {
         }
         if let resultList = results {
             searches.append(resultList)
+            cleanThumbnails()
         }
         collectionView?.reloadData()
     }
@@ -78,6 +80,19 @@ final class FlickrViewController: UIViewController {
         }
         requestPhotos(lastResult.searchTerm, lastResult.page + 1)
     }
+    
+    private func cleanThumbnails() {
+        let maxCleanChankIndex = searches.count - Constants.searchResultPageThumbnailsInMemory
+        if maxCleanChankIndex <= 0 {
+            return
+        }
+        for index in 0..<maxCleanChankIndex {
+            for result in searches[index].searchResults {
+                result.thumbnail = nil
+            }
+            print("search result from page \(index + 1) does not have more templates image data in memory. Memory manager is happy!")
+        }
+    }
 }
 
 extension FlickrViewController: UISearchBarDelegate {
@@ -108,7 +123,12 @@ extension FlickrViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reuseIdentifier,
                                                       for: indexPath) as! FlickrPhotoCell
         let flickrPhoto = photo(for: indexPath)
-        cell.imageView.image = flickrPhoto.thumbnail
+        if let thumbnail = flickrPhoto.thumbnail {
+            cell.imageView.image = thumbnail
+        } else if let imageLocalURL = flickrPhoto.thumbnailLocalURL,
+                let imageData = try? Data(contentsOf: imageLocalURL as URL) {
+            cell.imageView.image = UIImage(data: imageData)
+        }
         return cell
     }
     
