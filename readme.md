@@ -16,3 +16,5 @@ Problem:
 
 Possible solution:
 - show empty frames and download each image asynchronously
+
+![](demo.gif)
