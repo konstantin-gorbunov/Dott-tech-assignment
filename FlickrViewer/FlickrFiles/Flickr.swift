@@ -11,7 +11,7 @@ import UIKit
 let apiKey: String = "3e7cc266ae2b0e0d78e279ce8e361736"
 
 class Flickr {
-    
+
     var session = URLSession.shared
     
     private enum Error: Swift.Error {
@@ -111,14 +111,31 @@ class Flickr {
             }.resume()
     }
     
+    private func saveImage(data: Data, fileUrl: URL) {
+        DispatchQueue.global(qos: .background).async {
+            do {
+                try data.write(to: fileUrl)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     private func setFlickrImage(_ flickrPhoto: FlickrPhoto) {
+        guard let fileUrl = flickrPhoto.getLocalPath() else {
+            return
+        }
+        flickrPhoto.thumbnailLocalURL = fileUrl
+        let fileExist = FileManager.default.fileExists(atPath: fileUrl.path)
         guard
-            let url = flickrPhoto.flickrImageURL(),
+            let url = fileExist ? fileUrl : flickrPhoto.flickrImageURL(),
             let imageData = try? Data(contentsOf: url as URL)
             else {
                 return
         }
-        
+        if fileExist == false {
+            saveImage(data: imageData, fileUrl: fileUrl)
+        }
         if let image = UIImage(data: imageData) {
             flickrPhoto.thumbnail = image
         }

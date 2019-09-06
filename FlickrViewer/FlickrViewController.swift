@@ -58,7 +58,7 @@ final class FlickrViewController: UIViewController {
             case .error(let error) :
                 print("Error Searching: \(error)")
             case .results(let results):
-                print("Found \(results.searchResults.count) matching \(results.searchTerm)")
+                print("Found \(results.searchResults.count) matching \(results.searchTerm) on page \(results.page)")
                 self.refreshWithData(results)
             }
             self.loadingInProgress = false

@@ -11,8 +11,9 @@ import UIKit
 class FlickrPhoto {
     
     var thumbnail: UIImage?
+    var thumbnailLocalURL: URL?
     
-    private let photoID: String
+    let photoID: String
     private let farm: Int
     private let server: String
     private let secret: String
@@ -29,5 +30,15 @@ class FlickrPhoto {
             return url
         }
         return nil
-    }    
+    }
+    
+    func getLocalPath() -> URL? {
+        guard
+            let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL,
+            let fileUrl = directory.appendingPathComponent("\(photoID).jpg")
+            else {
+                return nil
+        }
+        return fileUrl
+    }
 }
