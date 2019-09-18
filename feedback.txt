@@ -1,0 +1,6 @@
+Feedback from review:
+- lack of documentation, comments, some very large methods with 90+ lines of code, force unwraps, potential runtime crashes (accessing array indexes without safety checks)
+- code is tied to flickr everywhere, even variable names.
+- chosen architecture MVC is very basic and even for this project ended up causing responsibility leaks (VC downloading images)
+- image downloading is done without any network layer
+- small test coverage
